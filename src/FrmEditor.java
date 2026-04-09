@@ -1,29 +1,36 @@
+import javax.swing.AbstractAction;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JToolBar;
+import javax.swing.KeyStroke;
 import javax.swing.WindowConstants;
 import javax.swing.border.LineBorder;
+
+import modelos.Linea;
+import modelos.Ovalo;
+import modelos.Rectangulo;
+import modelos.Trazo;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.Graphics;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseMotionAdapter;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.util.Arrays;
 import java.awt.event.MouseEvent;
 
 public class FrmEditor extends JFrame {
+
+    private final String ACCION_CANCELAR = "cancelar";
 
     private JButton btnCargar, btnGuardar, btnEliminar, btnSeleccionar, btnDibujar;
     private JComboBox cmbTipo, cmbColorR, cmbColorG, cmbColorB;
@@ -36,7 +43,6 @@ public class FrmEditor extends JFrame {
     int y;
     Color color;
     String nombreArchivo = "";
-
 
     public FrmEditor() {
 
@@ -77,7 +83,7 @@ public class FrmEditor extends JFrame {
         tbEditor.add(btnGuardar);
 
         cmbTipo.setModel(
-                new DefaultComboBoxModel(Arrays.stream(TipoTrazo.values()).map(Enum::name).toArray(String[]::new)));
+                new DefaultComboBoxModel(TipoTrazo.values()));
         tbEditor.add(cmbTipo);
 
         for (int i = 0; i < 256; i++) {
@@ -139,6 +145,7 @@ public class FrmEditor extends JFrame {
         });
         tbEditor.add(btnDibujar);
 
+        // Eventos del panel de dibujo
         pnlGrafica.addMouseListener(new MouseAdapter() {
             public void mouseClicked(MouseEvent evt) {
                 pnlGraficaMouseClicked(evt);
@@ -147,6 +154,16 @@ public class FrmEditor extends JFrame {
         pnlGrafica.addMouseMotionListener(new MouseMotionAdapter() {
             public void mouseMoved(MouseEvent evt) {
                 pnlGraficaMouseMoved(evt);
+            }
+        });
+
+        pnlGrafica.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
+                .put(KeyStroke.getKeyStroke("ESCAPE"), ACCION_CANCELAR);
+
+        pnlGrafica.getActionMap().put(ACCION_CANCELAR, new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                pnlGraficaCancelar();
             }
         });
 
@@ -170,7 +187,7 @@ public class FrmEditor extends JFrame {
     }
 
     private void setColor() {
-        Color color = new Color(cmbColorR.getSelectedIndex(), cmbColorG.getSelectedIndex(),
+        color = new Color(cmbColorR.getSelectedIndex(), cmbColorG.getSelectedIndex(),
                 cmbColorB.getSelectedIndex());
         lblColor.setBackground(color);
     }
@@ -195,12 +212,58 @@ public class FrmEditor extends JFrame {
 
     }
 
-    private void pnlGraficaMouseClicked(MouseEvent evt) {
+    private Dibujo dibujo = new Dibujo();
 
+    private void pnlGraficaMouseClicked(MouseEvent evt) {
+        if (estado == Estado.NADA) {
+            x = evt.getX();
+            y = evt.getY();
+            estado = Estado.TRAZANDO;
+        } else if (estado == Estado.TRAZANDO) {
+            Trazo trazo = null;
+            switch ((TipoTrazo) cmbTipo.getSelectedItem()) {
+                case LINEA:
+                    trazo = new Linea(x, y, evt.getX(), evt.getY());
+                    break;
+                case RECTANGULO:
+                    trazo = new Rectangulo(x, y, evt.getX(), evt.getY());
+                    break;
+                case OVALO:
+                    trazo = new Ovalo(x, y, evt.getX(), evt.getY());
+                    break;
+            }
+            dibujo.agregar(trazo, color);
+            dibujo.dibujar(pnlGrafica);
+
+            estado = Estado.NADA;
+        }
+        System.out.println("x=" + evt.getX() + ", y=" + evt.getY());
     }
 
     private void pnlGraficaMouseMoved(MouseEvent evt) {
+        if (estado == Estado.TRAZANDO) {
+            Trazo trazo = null;
+            switch ((TipoTrazo) cmbTipo.getSelectedItem()) {
+                case LINEA:
+                    trazo = new Linea(x, y, evt.getX(), evt.getY());
+                    break;
+                case RECTANGULO:
+                    trazo = new Rectangulo(x, y, evt.getX(), evt.getY());
+                    break;
+                case OVALO:
+                    trazo = new Ovalo(x, y, evt.getX(), evt.getY());
+                    break;
+            }
+            dibujo.dibujar(pnlGrafica);
+            // mostrar el trazo temporalmente;
+            trazo.dibujar(pnlGrafica.getGraphics(), color);
 
+        }
+    }
+
+    private void pnlGraficaCancelar() {
+        estado = Estado.NADA;
+        dibujo.dibujar(pnlGrafica);
     }
 
 }
