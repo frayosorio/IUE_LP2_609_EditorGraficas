@@ -65,7 +65,7 @@ public class FrmEditor extends JFrame {
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
         btnCargar.setIcon(new ImageIcon(getClass().getResource("/iconos/AbrirArchivos.png")));
-        btnCargar.setToolTipText("Agregar");
+        btnCargar.setToolTipText("Cargar dibujo desde archivo");
         btnCargar.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
                 cargarDibujo();
@@ -193,7 +193,11 @@ public class FrmEditor extends JFrame {
     }
 
     private void cargarDibujo() {
-
+        nombreArchivo = Archivo.elegirArchivo();
+        if (!nombreArchivo.isEmpty()) {
+            dibujo.desdeJSON(nombreArchivo);
+            dibujo.dibujar(pnlGrafica);
+        }
     }
 
     private void guardarDibujo() {
