@@ -1,4 +1,5 @@
 import java.awt.Graphics;
+import java.util.ArrayList;
 import java.util.List;
 import java.awt.Color;
 
@@ -10,6 +11,7 @@ import modelos.Linea;
 import modelos.Nodo;
 import modelos.Ovalo;
 import modelos.Rectangulo;
+import modelos.TipoTrazo;
 import modelos.Trazo;
 import modelos.TrazoDTO;
 
@@ -66,6 +68,16 @@ public class Dibujo {
             }
             agregar(trazo, new Color(trazoDTO.getRed(), trazoDTO.getGreen(), trazoDTO.getBlue()));
         }
+    }
+
+    public void haciaJSON(String nombreArchivo) {
+        List<TrazoDTO> trazos = new ArrayList<>();
+        var actual = cabeza;
+        while (actual != null) {
+            trazos.add(actual.haciaDTO());
+            actual = actual.siguiente;
+        }
+        Archivo.guardarJson(nombreArchivo, trazos);
     }
 
     // ********** Metodos Estaticos **********

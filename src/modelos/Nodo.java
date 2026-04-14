@@ -2,7 +2,6 @@ package modelos;
 
 import java.awt.Color;
 
-
 public class Nodo {
 
     private Trazo trazo;
@@ -30,6 +29,10 @@ public class Nodo {
         this.color = color;
     }
 
-    
+    public TrazoDTO haciaDTO() {
+        return new TrazoDTO(trazo.getTipo().toString(),
+                trazo.getX1(), trazo.getY1(), trazo.getX2(), trazo.getY2(),
+                color.getRed(), color.getGreen(), color.getBlue());
+    }
 
 }

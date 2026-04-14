@@ -15,4 +15,9 @@ public class Rectangulo extends Trazo {
         g.drawRect(getXMinimo(), getYMinimo(), getAncho(), getAlto());
     }
 
+    @Override
+    public TipoTrazo getTipo() {
+        return TipoTrazo.RECTANGULO;
+    }
+
 }

@@ -15,4 +15,9 @@ public class Ovalo extends Trazo {
         g.drawOval(getXMinimo(), getYMinimo(), getAncho(), getAlto());
     }
 
+    @Override
+    public TipoTrazo getTipo() {
+        return TipoTrazo.OVALO;
+    }
+
 }

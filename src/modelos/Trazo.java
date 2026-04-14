@@ -63,4 +63,7 @@ public abstract class Trazo {
 
     public abstract void dibujar(Graphics g, Color color);
 
+    public abstract TipoTrazo getTipo();
+
+
 }

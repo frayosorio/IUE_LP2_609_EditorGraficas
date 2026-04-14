@@ -6,6 +6,7 @@ import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JToolBar;
 import javax.swing.KeyStroke;
@@ -15,6 +16,7 @@ import javax.swing.border.LineBorder;
 import modelos.Linea;
 import modelos.Ovalo;
 import modelos.Rectangulo;
+import modelos.TipoTrazo;
 import modelos.Trazo;
 
 import java.awt.BorderLayout;
@@ -201,7 +203,13 @@ public class FrmEditor extends JFrame {
     }
 
     private void guardarDibujo() {
-
+        if (nombreArchivo.isEmpty()) {
+            nombreArchivo = Archivo.elegirArchivo();
+        }
+        if (!nombreArchivo.isEmpty()) {
+            dibujo.haciaJSON(nombreArchivo);
+             JOptionPane.showMessageDialog(null, "El dibujo fue guardado");
+        }
     }
 
     private void seleccionarTrazo() {

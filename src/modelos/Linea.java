@@ -15,4 +15,9 @@ public class Linea extends Trazo {
         g.drawLine(getX1(), getY1(), getX2(), getY2());
     }
 
+    @Override
+    public TipoTrazo getTipo() {
+        return TipoTrazo.LINEA;
+    }
+
 }
