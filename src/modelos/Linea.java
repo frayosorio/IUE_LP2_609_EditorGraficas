@@ -1,7 +1,9 @@
 package modelos;
 
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 
 public class Linea extends Trazo {
 
@@ -10,14 +12,21 @@ public class Linea extends Trazo {
     }
 
     @Override
-    public void dibujar(Graphics g, Color color) {
-        g.setColor(color);
-        g.drawLine(getX1(), getY1(), getX2(), getY2());
+    public void dibujar(Graphics g, Color color, boolean seleccionado) {
+        Graphics2D g2d = (Graphics2D) g;
+        g2d.setColor(color);
+        g2d.setStroke(new BasicStroke(seleccionado ? 4 : 1));
+        g2d.drawLine(getX1(), getY1(), getX2(), getY2());
     }
 
     @Override
     public TipoTrazo getTipo() {
         return TipoTrazo.LINEA;
+    }
+
+    @Override
+    public boolean cercano(int x, int y) {
+        return esCercanoALinea(x, y, getX1(), getY1(), getX2(), getY2());
     }
 
 }

@@ -198,7 +198,7 @@ public class FrmEditor extends JFrame {
         nombreArchivo = Archivo.elegirArchivo();
         if (!nombreArchivo.isEmpty()) {
             dibujo.desdeJSON(nombreArchivo);
-            dibujo.dibujar(pnlGrafica);
+            dibujo.dibujar(pnlGrafica, false);
         }
     }
 
@@ -208,12 +208,12 @@ public class FrmEditor extends JFrame {
         }
         if (!nombreArchivo.isEmpty()) {
             dibujo.haciaJSON(nombreArchivo);
-             JOptionPane.showMessageDialog(null, "El dibujo fue guardado");
+            JOptionPane.showMessageDialog(null, "El dibujo fue guardado");
         }
     }
 
     private void seleccionarTrazo() {
-
+        estado = Estado.SELECCIONANDO;
     }
 
     private void eliminarTrazo() {
@@ -221,7 +221,8 @@ public class FrmEditor extends JFrame {
     }
 
     private void dibujar() {
-
+        estado = Estado.NADA;
+        dibujo.dibujar(pnlGrafica, false);
     }
 
     private Dibujo dibujo = new Dibujo();
@@ -245,9 +246,13 @@ public class FrmEditor extends JFrame {
                     break;
             }
             dibujo.agregar(trazo, color);
-            dibujo.dibujar(pnlGrafica);
+            dibujo.dibujar(pnlGrafica, false);
 
             estado = Estado.NADA;
+        } else if (estado == Estado.SELECCIONANDO) {
+            if (dibujo.seleccionar(evt.getX(), evt.getY())) {
+                dibujo.dibujar(pnlGrafica, true);
+            }
         }
         System.out.println("x=" + evt.getX() + ", y=" + evt.getY());
     }
@@ -266,16 +271,16 @@ public class FrmEditor extends JFrame {
                     trazo = new Ovalo(x, y, evt.getX(), evt.getY());
                     break;
             }
-            dibujo.dibujar(pnlGrafica);
+            dibujo.dibujar(pnlGrafica, false);
             // mostrar el trazo temporalmente;
-            trazo.dibujar(pnlGrafica.getGraphics(), color);
+            trazo.dibujar(pnlGrafica.getGraphics(), color, false);
 
         }
     }
 
     private void pnlGraficaCancelar() {
         estado = Estado.NADA;
-        dibujo.dibujar(pnlGrafica);
+        dibujo.dibujar(pnlGrafica, false);
     }
 
 }

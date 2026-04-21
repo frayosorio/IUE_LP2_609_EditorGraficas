@@ -20,6 +20,7 @@ public class Dibujo {
     // ********** Variables y Metodos de Clase **********
 
     private Nodo cabeza;
+    private Nodo nodoSeleccionado;
 
     public Dibujo() {
         cabeza = null;
@@ -39,12 +40,12 @@ public class Dibujo {
         }
     }
 
-    public void dibujar(JPanel pnl) {
+    public void dibujar(JPanel pnl, boolean seleccionado) {
         limpiarPanel(pnl);
         // recorrer toda la lista
         var actual = cabeza;
         while (actual != null) {
-            actual.getTrazo().dibujar(pnl.getGraphics(), actual.getColor());
+            actual.getTrazo().dibujar(pnl.getGraphics(), actual.getColor(), seleccionado && actual == nodoSeleccionado);
             actual = actual.siguiente;
         }
     }
@@ -78,6 +79,20 @@ public class Dibujo {
             actual = actual.siguiente;
         }
         Archivo.guardarJson(nombreArchivo, trazos);
+    }
+
+    public boolean seleccionar(int x, int y) {
+        nodoSeleccionado = null;
+        // recorrer toda la lista
+        var actual = cabeza;
+        while (actual != null) {
+            if (actual.getTrazo().cercano(x, y)) {
+                nodoSeleccionado = actual;
+                return true;
+            }
+            actual = actual.siguiente;
+        }
+        return false;
     }
 
     // ********** Metodos Estaticos **********
