@@ -26,6 +26,10 @@ public class Dibujo {
         cabeza = null;
     }
 
+    public Nodo getNodoSeleccionado() {
+        return nodoSeleccionado;
+    }
+
     public void agregar(Trazo trazo, Color color) {
         var nodo = new Nodo(trazo, color);
         if (cabeza == null) {
@@ -38,6 +42,27 @@ public class Dibujo {
             }
             actual.siguiente = nodo;
         }
+    }
+
+    public void eliminar() {
+        if (nodoSeleccionado == null)
+            return;
+
+        if (cabeza == nodoSeleccionado) {
+            cabeza = cabeza.siguiente;
+            return;
+        }
+
+        var actual = cabeza;
+        Nodo anterior = null;
+        while (actual != nodoSeleccionado && actual != null) {
+            anterior = actual;
+            actual = actual.siguiente;
+        }
+        if (anterior != null && actual != null) {
+            anterior.siguiente = actual.siguiente;
+        }
+        nodoSeleccionado = null;
     }
 
     public void dibujar(JPanel pnl, boolean seleccionado) {

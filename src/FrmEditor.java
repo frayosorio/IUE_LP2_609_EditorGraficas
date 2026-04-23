@@ -21,6 +21,7 @@ import modelos.Trazo;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -217,7 +218,13 @@ public class FrmEditor extends JFrame {
     }
 
     private void eliminarTrazo() {
+        if (dibujo.getNodoSeleccionado() == null) {
+            JOptionPane.showMessageDialog(null, "No hay trazo seleccionado");
+            return;
+        }
 
+        dibujo.eliminar();
+        dibujo.dibujar(pnlGrafica, false);
     }
 
     private void dibujar() {
@@ -258,6 +265,7 @@ public class FrmEditor extends JFrame {
     }
 
     private void pnlGraficaMouseMoved(MouseEvent evt) {
+        pnlGrafica.setCursor(Cursor.getDefaultCursor());
         if (estado == Estado.TRAZANDO) {
             Trazo trazo = null;
             switch ((TipoTrazo) cmbTipo.getSelectedItem()) {
@@ -274,7 +282,8 @@ public class FrmEditor extends JFrame {
             dibujo.dibujar(pnlGrafica, false);
             // mostrar el trazo temporalmente;
             trazo.dibujar(pnlGrafica.getGraphics(), color, false);
-
+        } else if (estado == Estado.SELECCIONANDO) {
+            pnlGrafica.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         }
     }
 
